@@ -9,8 +9,8 @@ const CustomLayout = () => {
       <Header className={styles.header}>
         <Link to="/">Realworld Blog</Link>
         <div>
-          <Link className={styles.login} to="login">Sign In</Link>
-          <Link className={styles.register} to="register">Sign Up</Link>
+          <Link className={styles.login} to="sign-in">Sign In</Link>
+          <Link className={styles.register} to="sign-up">Sign Up</Link>
         </div>
       </Header>
       <Content className={styles.content}>

@@ -8,8 +8,8 @@ import {
 import CustomLayout from "./components/CustomLayout";
 import ArticlesList from "./components/ArticlesList/ArticlesList";
 import SingleArticle from "./components/SingleArticle";
-import Login from "./components/Login";
-import Register from "./components/Register";
+import SignIn from "./components/SignIn";
+import SignUp from "./components/SignUp";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -17,8 +17,8 @@ const router = createBrowserRouter(
       <Route index path="/" element={<ArticlesList />} />
       <Route path="articles" element={<ArticlesList />} />
       <Route path="articles/:slug" element={<SingleArticle />} />
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<Register />} />
+      <Route path="sign-in" element={<SignIn />} />
+      <Route path="sign-up" element={<SignUp />} />
     </Route>
   )
 );

@@ -4,7 +4,8 @@ import moment from "moment";
 import { HeartOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import nextId from "react-id-generator";
-import Markdown from 'markdown-to-jsx'
+import Markdown from "markdown-to-jsx";
+import apiService from "../../apiService";
 
 import styles from "./SingleArticle.module.scss";
 
@@ -12,19 +13,14 @@ const SingleArticle = () => {
   const { slug } = useParams();
   const [article, setArticle] = useState({});
 
+  const api = new apiService();
+
   useEffect(() => {
-    async function getArticle() {
-      try {
-        const res = await axios.get(
-          `https://blog.kata.academy/api/articles/${slug}`
-        );
-        setArticle(res.data.article);
-        console.log(res.data.article);
-      } catch (error) {
-        console.error(error);
-      }
+    async function getData(slug) {
+      const data = await api.getArticle(slug);
+      setArticle(data);
     }
-    getArticle();
+    getData(slug);
   }, []);
 
   return (

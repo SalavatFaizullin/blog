@@ -1,0 +1,52 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 385px;
+  height: 375px;
+  background-color: white;
+  border: 1px solid #d9d9d9;
+  box-shadow: 0px 22px 106px rgba(0, 0, 0, 0.07),
+    0px 9.19107px 44.2843px rgba(0, 0, 0, 0.0503198),
+    0px 4.91399px 23.6765px rgba(0, 0, 0, 0.0417275),
+    0px 2.75474px 13.2728px rgba(0, 0, 0, 0.035),
+    0px 1.46302px 7.04911px rgba(0, 0, 0, 0.0282725),
+    0px 0.608796px 2.93329px rgba(0, 0, 0, 0.0196802);
+  border-radius: 6px;
+  margin: 60px auto 0 auto;
+  padding: 50px 30px;
+
+  & h1 {
+    font-weight: 500;
+    font-size: 20px;
+  }
+
+  & .link {
+    font-size: 12px;
+    color: #8c8c8c;
+    margin-top: 5px;
+  }
+
+  .input {
+    width: 320px;
+    height: 40px;
+    margin-top: 5px;
+    border-radius: 4px;
+  }
+
+  .button {
+    height: 40px;
+    display: block;
+    width: 100%;
+  }
+
+  .checkbox {
+    margin-right: 10px;
+  }
+
+  .error {
+    color: red;
+    margin: 5px 0 10px 0;
+  }
+}

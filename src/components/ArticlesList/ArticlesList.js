@@ -1,32 +1,42 @@
-import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styles from "./ArticlesList.module.scss";
 import nextId from "react-id-generator";
 import moment from "moment";
 import { HeartOutlined } from "@ant-design/icons";
 import { Pagination } from "antd";
-import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 
-import { articlesListFetching, onPageChange } from "./ArticlesListSlice";
+import { Link } from "react-router-dom";
+import apiService from "../../apiService";
+
+//import { articlesListFetching, onPageChange } from "./ArticlesListSlice";
+//import { useSelector, useDispatch } from "react-redux";
 
 const ArticlesList = () => {
-  const { data, page } = useSelector((state) => state.articlesList);
-  const dispatch = useDispatch();
+  // const { data, page } = useSelector((state) => state.articlesList);
+  // const dispatch = useDispatch();
+
+  const api = new apiService();
+
+  const [data, setData] = useState({});
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const offset = (page - 1) * 5;
-    async function getArticles() {
-      try {
-        const res = await axios.get(
-          `https://blog.kata.academy/api/articles?limit=5&offset=${offset}`
-        );
-        dispatch(articlesListFetching(res.data));
-      } catch (error) {
-        console.error(error);
-      }
+    async function getData(offset) {
+      const data = await api.getArticles(offset);
+      setData(data);
     }
-    getArticles();
+    getData(offset);
+    // async function getArticles() {
+    //   try {
+    //     const res = await axios.get(
+    //       `https://blog.kata.academy/api/articles?limit=5&offset=${offset}`
+    //     );
+    //     dispatch(articlesListFetching(res.data));
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // }
   }, [page]);
 
   const articlePreview = (data) => {
@@ -34,7 +44,11 @@ const ArticlesList = () => {
       <div key={data.slug} className={styles.article}>
         <div className={styles.content}>
           <div className={styles.header}>
-            <h3><Link key={data.slug} to={`/articles/${data.slug}`}>{data.title}</Link></h3>
+            <h3>
+              <Link key={data.slug} to={`/articles/${data.slug}`}>
+                {data.title}
+              </Link>
+            </h3>
             <span>
               <HeartOutlined className={styles.heart} />
               {data.favoritesCount}
@@ -65,7 +79,8 @@ const ArticlesList = () => {
   };
 
   const onChange = (page) => {
-    dispatch(onPageChange(page));
+    // dispatch(onPageChange(page));
+    setPage(page);
   };
 
   return (
