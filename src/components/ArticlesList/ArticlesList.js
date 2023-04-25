@@ -59,7 +59,7 @@ const ArticlesList = () => {
               {tag}
             </span>
           ))}
-          <p>{data.body}</p>
+          <p>{data.description}</p>
         </div>
         <div className={styles.info}>
           <div>
