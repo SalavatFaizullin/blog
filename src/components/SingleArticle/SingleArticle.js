@@ -23,40 +23,46 @@ const SingleArticle = () => {
     getData(slug);
   }, []);
 
+  const {
+    title,
+    favoritesCount,
+    tagList,
+    description,
+    body,
+    author,
+    createdAt,
+  } = article;
+
   return (
     <>
-      {article.slug ? (
+      {title ? (
         <div className={styles.article}>
           <div className={styles.content}>
             <div className={styles.header}>
-              <h3>{article.title}</h3>
+              <h3>{title}</h3>
               <span>
                 <HeartOutlined className={styles.heart} />
-                {article.favoritesCount}
+                {favoritesCount}
               </span>
             </div>
-            {article.tagList.map((tag) => (
+            {tagList.map((tag) => (
               <span className={styles.tag} key={nextId()}>
                 {tag}
               </span>
             ))}
-            <p className={styles.description}>{article.description}</p>
+            <p className={styles.description}>{description}</p>
             <p className={styles.body}>
-              <Markdown>{article.body}</Markdown>
+              <Markdown>{body}</Markdown>
             </p>
           </div>
           <div className={styles.info}>
             <div>
-              <div className={styles.username}>{article.author.username}</div>
+              <div className={styles.username}>{author.username}</div>
               <div className={styles.date}>
-                {moment(article.createdAt).format("MMMM D, YYYY")}
+                {moment(createdAt).format("MMMM D, YYYY")}
               </div>
             </div>
-            <img
-              className={styles.userpic}
-              src={article.author.image}
-              alt="userpic"
-            />
+            <img className={styles.userpic} src={author.image} alt="userpic" />
           </div>
         </div>
       ) : (

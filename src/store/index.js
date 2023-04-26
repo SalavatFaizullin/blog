@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import articlesList from '../components/ArticlesList/ArticlesListSlice'
+import authorization from "../components/SignIn/SignInSlice";
 
 const store = configureStore({
-  reducer: {articlesList},
+  reducer: { authorization },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
   devTools: process.env.NODE_ENV !== "production",
 });

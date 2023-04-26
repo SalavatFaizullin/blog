@@ -13,7 +13,6 @@ body {
 
   & a {
     color: black;
-
     &:hover {
       color: #1677ff;
     }
@@ -37,6 +36,47 @@ a.register {
   border: 1px solid #52c41a;
   padding: 10px;
   border-radius: 5px;
+
+  &:hover {
+    background-color: #52c41a;
+    color: white;
+  }
+}
+
+.logout {
+  color: black;
+  border: 1px solid black;
+  font-size: 18px;
+  height: 45px;
+}
+
+.info {
+  width: fit-content;
+  height: 45px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 15px 0 auto;
+}
+
+.username {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.userpic {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+}
+
+a.create {
+  color: #52c41a;
+  border: 1px solid #52c41a;
+  font-size: 14px;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-right: 15px;
 
   &:hover {
     background-color: #52c41a;
