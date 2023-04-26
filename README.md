@@ -1,2 +1,2 @@
 # blog platform
-blog-xi-blush.vercel.app
+https://blog-xi-blush.vercel.app/
