@@ -30,7 +30,7 @@ const Profile = () => {
   const onSubmit = (data) => {
     const { username, email, password, image } = data;
     api.updateUser(username, email, password, image);
-    localStorage.clear('user');
+    localStorage.clear("user");
     Cookies.remove("token");
     dispatch(authorize(null));
     reset();
@@ -129,13 +129,12 @@ const Profile = () => {
               </label>
               <div className={styles.error}>{errors?.password?.message}</div>
 
-              <label htmlFor="avatar">
+              <label htmlFor="image">
                 Avatar
                 <Controller
-                  name="avatar"
+                  name="image"
                   control={control}
                   rules={{
-                    // required: "Please input new or current link to image",
                     pattern: {
                       value:
                         /^(https?:\/\/)?[\w\-]+(\.[\w\-]+)+[\w\-\.,@?^=%&:/~\+#]*\.(jpg|jpeg|png|gif|bmp|svg|webp)$/,
@@ -144,15 +143,15 @@ const Profile = () => {
                   }}
                   render={({ field }) => (
                     <Input
-                      autoComplete="avatar"
+                      autoComplete="image"
                       className={styles.input}
                       {...field}
-                      status={errors.avatar ? "error" : null}
+                      status={errors.image ? "error" : null}
                     />
                   )}
                 />
               </label>
-              <div className={styles.error}> {errors?.avatar?.message} </div>
+              <div className={styles.error}> {errors?.image?.message} </div>
 
               <Button
                 className={styles.button}

@@ -17,7 +17,7 @@ const CustomLayout = () => {
   }, []);
 
   const onLogout = () => {
-    localStorage.clear('user');
+    localStorage.clear("user");
     Cookies.remove("token");
     dispatch(authorize(null));
   };
