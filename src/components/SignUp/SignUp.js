@@ -3,14 +3,20 @@ import { useForm, Controller } from "react-hook-form";
 import { Button, Input } from "antd";
 import { Link } from "react-router-dom";
 import apiService from "../../apiService";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { authorize } from "../SignIn/SignInSlice";
 import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const SignUp = () => {
   const api = new apiService();
 
-  const userData = JSON.parse(localStorage.getItem("user"));
   const { user } = useSelector((state) => state.authorization);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(authorize(JSON.parse(localStorage.getItem("user"))));
+  }, []);
 
   const {
     register,
@@ -25,18 +31,14 @@ const SignUp = () => {
 
   const onSubmit = (data) => {
     const { username, email, password } = data;
-    async function signUp(username, email, password) {
-      const res = await api.signUp(username, email, password);
-      console.log(res); // удалить вывод в консоль
-    }
-    signUp(username, email, password);
+    api.signUp(username, email, password);
     reset();
   };
 
   return (
     <>
-      {userData || user ? (
-        <Navigate to='/' replace />
+      {user ? (
+        <Navigate to="/" replace />
       ) : (
         <div className={styles.container}>
           <h1>Create new account</h1>
@@ -151,8 +153,7 @@ const SignUp = () => {
               />
             </label>
             <div className={styles.error}>
-              {" "}
-              {errors?.confirmPassword?.message}{" "}
+              {errors?.confirmPassword?.message}
             </div>
 
             <label htmlFor="checkbox">

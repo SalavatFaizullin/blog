@@ -6,6 +6,8 @@ import apiService from "../../apiService";
 import { useDispatch, useSelector } from "react-redux";
 import { authorize } from "./SignInSlice";
 import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 const SignIn = () => {
   const { user } = useSelector((state) => state.authorization);
@@ -13,7 +15,9 @@ const SignIn = () => {
 
   const api = new apiService();
 
-  const userData = JSON.parse(localStorage.getItem("user"));
+  useEffect(() => {
+    dispatch(authorize(JSON.parse(localStorage.getItem("user"))));
+  }, []);
 
   const {
     formState: { errors },
@@ -29,7 +33,9 @@ const SignIn = () => {
     async function signIn(email, password) {
       const res = await api.signIn(email, password);
       localStorage.setItem("user", JSON.stringify(res));
+      Cookies.set("token", res.token, { expires: 3 });
       dispatch(authorize(res));
+      console.log(res);
     }
     signIn(email, password);
     reset();
@@ -37,7 +43,7 @@ const SignIn = () => {
 
   return (
     <>
-      {userData || user ? (
+      {user ? (
         <Navigate to="/" replace />
       ) : (
         <div className={styles.container}>

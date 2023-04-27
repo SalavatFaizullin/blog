@@ -1,24 +1,32 @@
 import { Outlet, Link } from "react-router-dom";
 import styles from "./CustomLayout.module.scss";
 import { Layout, Button } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { authorize } from "../SignIn/SignInSlice";
+import { useEffect } from "react";
+import Cookies from "js-cookie";
 
 const CustomLayout = () => {
   const { Header, Content } = Layout;
 
-  const userData = JSON.parse(localStorage.getItem("user"));
   const { user } = useSelector((state) => state.authorization);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(authorize(JSON.parse(localStorage.getItem("user"))));
+  }, []);
 
   const onLogout = () => {
-    localStorage.clear();
-    window.location.reload();
+    localStorage.clear('user');
+    Cookies.remove("token");
+    dispatch(authorize(null));
   };
 
   return (
     <Layout>
       <Header className={styles.header}>
         <Link to="/">Realworld Blog</Link>
-        {userData || user ? (
+        {user ? (
           <>
             <div className={styles.info}>
               <div>
@@ -27,11 +35,16 @@ const CustomLayout = () => {
                 </Link>
               </div>
               <div>
-                <div className={styles.username}>{userData.username}</div>
+                <Link to="/profile">
+                  <div className={styles.username}>{user.username}</div>
+                </Link>
               </div>
               <img
                 className={styles.userpic}
-                src={userData.image}
+                src={
+                  user.image ||
+                  "https://static.productionready.io/images/smiley-cyrus.jpg"
+                }
                 alt="userpic"
               />
             </div>
