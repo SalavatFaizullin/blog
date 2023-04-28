@@ -44,12 +44,12 @@ const Profile = () => {
             <h1>Edit Profile</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
               <label htmlFor="username">
-                New Username
+                Username
                 <Controller
                   name="username"
                   control={control}
                   rules={{
-                    required: "Please input new username",
+                    required: "Please input username",
                     minLength: {
                       value: 3,
                       message: "Username min length must be 3 chars",
@@ -77,12 +77,12 @@ const Profile = () => {
               <div className={styles.error}>{errors?.username?.message}</div>
 
               <label htmlFor="email">
-                New Email address
+                Email address
                 <Controller
                   name="email"
                   control={control}
                   rules={{
-                    required: "Please input new email",
+                    required: "Please input email",
                     pattern: {
                       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
                       message: "Invalid email",

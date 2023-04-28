@@ -32,10 +32,11 @@ const SignIn = () => {
     const { email, password } = data;
     async function signIn(email, password) {
       const res = await api.signIn(email, password);
-      localStorage.setItem("user", JSON.stringify(res));
+      if (res !== undefined) {
+        localStorage.setItem("user", JSON.stringify(res));
+      }
       Cookies.set("token", res.token, { expires: 3 });
       dispatch(authorize(res));
-      console.log(res);
     }
     signIn(email, password);
     reset();
