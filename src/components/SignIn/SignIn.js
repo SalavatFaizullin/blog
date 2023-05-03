@@ -44,7 +44,6 @@ const SignIn = () => {
         if (res !== undefined) {
           Cookies.set("token", res.data.user.token, { expires: 3 });
           dispatch(authorize(res.data.user));
-          window.location.reload();
         }
       } catch (err) {
         console.error(err);
