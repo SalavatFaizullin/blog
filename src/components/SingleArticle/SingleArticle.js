@@ -27,7 +27,7 @@ const SingleArticle = () => {
       try {
         const res = await instance.get(`/articles/${slug}`);
         dispatch(setArticle(res.data.article));
-        dispatch(setLikes(res.data.article.favoritesCount));
+        // dispatch(setLikes(res.data.article.favoritesCount));
         // dispatch(setIsFavorited(res.data.article.favorited));
       } catch (error) {
         console.error(error);
