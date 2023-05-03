@@ -1,17 +1,15 @@
 import styles from "./Profile.module.scss";
 import { useForm, Controller } from "react-hook-form";
 import { Button, Input } from "antd";
-import apiService from "../../apiService";
 import { useSelector, useDispatch } from "react-redux";
 import { authorize } from "../SignIn/SignInSlice";
 import { Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
+import { instance } from "../../apiService";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.authorization);
-  const api = new apiService();
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -25,14 +23,26 @@ const Profile = () => {
     control,
   } = useForm({
     mode: "onBlur",
+    defaultValues: {
+      username: user?.username,
+      email: user?.email,
+      image: user?.image,
+    },
   });
 
   const onSubmit = (data) => {
-    const { username, email, password, image } = data;
-    api.updateUser(username, email, password, image);
-    localStorage.clear("user");
-    Cookies.remove("token");
-    dispatch(authorize(null));
+    async function updateUser(data) {
+      try {
+        const res = await instance.put(`/user`, {
+          user: { ...data },
+        });
+        dispatch(authorize(res.data.user));
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    updateUser(data);
     reset();
   };
 
@@ -59,13 +69,14 @@ const Profile = () => {
                       message: "Username max length must be 20 chars",
                     },
                     pattern: {
-                      value: /^[a-z][a-z0-9]*$/,
+                      value: /^[a-z0-9]*$/,
                       message:
                         "Only lowercase latin letters and numbers allowed",
                     },
                   }}
                   render={({ field }) => (
                     <Input
+                      // defaultValue={user.username}
                       autoComplete="username"
                       className={styles.input}
                       {...field}
@@ -90,6 +101,7 @@ const Profile = () => {
                   }}
                   render={({ field }) => (
                     <Input
+                      // defaultValue={user.email}
                       autoComplete="email"
                       className={styles.input}
                       {...field}
@@ -143,6 +155,7 @@ const Profile = () => {
                   }}
                   render={({ field }) => (
                     <Input
+                      // defaultValue={user.image}
                       autoComplete="image"
                       className={styles.input}
                       {...field}

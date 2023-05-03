@@ -2,15 +2,13 @@ import styles from "./SignUp.module.scss";
 import { useForm, Controller } from "react-hook-form";
 import { Button, Input } from "antd";
 import { Link } from "react-router-dom";
-import apiService from "../../apiService";
 import { useSelector, useDispatch } from "react-redux";
 import { authorize } from "../SignIn/SignInSlice";
 import { Navigate } from "react-router-dom";
 import { useEffect } from "react";
+import { instance } from "../../apiService";
 
 const SignUp = () => {
-  const api = new apiService();
-
   const { user } = useSelector((state) => state.authorization);
   const dispatch = useDispatch();
 
@@ -30,8 +28,16 @@ const SignUp = () => {
   });
 
   const onSubmit = (data) => {
-    const { username, email, password } = data;
-    api.signUp(username, email, password);
+    async function signUp(data) {
+      try {
+        await instance.post(`/users`, {
+          user: { ...data },
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    signUp(data);
     reset();
   };
 
@@ -59,7 +65,7 @@ const SignUp = () => {
                     message: "Username max length must be 20 chars",
                   },
                   pattern: {
-                    value: /^[a-z][a-z0-9]*$/,
+                    value: /^[a-z0-9]*$/,
                     message: "Only lowercase latin letters and numbers allowed",
                   },
                 }}

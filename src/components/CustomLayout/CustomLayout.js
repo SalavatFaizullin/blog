@@ -20,6 +20,7 @@ const CustomLayout = () => {
     localStorage.clear("user");
     Cookies.remove("token");
     dispatch(authorize(null));
+    window.location.reload();
   };
 
   return (
@@ -30,7 +31,7 @@ const CustomLayout = () => {
           <>
             <div className={styles.info}>
               <div>
-                <Link className={styles.create} to="/">
+                <Link className={styles.create} to="/new-article">
                   Create article
                 </Link>
               </div>

@@ -1,27 +1,15 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import moment from "moment";
 import { HeartOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import nextId from "react-id-generator";
 import Markdown from "markdown-to-jsx";
-import apiService from "../../apiService";
-
+import { instance } from "../../apiService";
 import styles from "./SingleArticle.module.scss";
 
 const SingleArticle = () => {
   const { slug } = useParams();
   const [article, setArticle] = useState({});
-
-  const api = new apiService();
-
-  useEffect(() => {
-    async function getData(slug) {
-      const data = await api.getArticle(slug);
-      setArticle(data);
-    }
-    getData(slug);
-  }, []);
 
   const {
     title,
@@ -33,6 +21,27 @@ const SingleArticle = () => {
     createdAt,
   } = article;
 
+  useEffect(() => {
+    async function getArticle(slug) {
+      try {
+        const res = await instance.get(`/articles/${slug}`);
+        setArticle(res.data.article);
+        console.log(res);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getArticle(slug);
+  }, []);
+
+  // const onLike = async (slug) => {
+  //   try {
+  //     await instance.post(`/articles/${slug}/favorite`);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   return (
     <>
       {title ? (
@@ -41,7 +50,12 @@ const SingleArticle = () => {
             <div className={styles.header}>
               <h3>{title}</h3>
               <span>
-                <HeartOutlined className={styles.heart} />
+                <HeartOutlined
+                  // onClick={() => {
+                  //   onLike(slug);
+                  // }}
+                  className={styles.heart}
+                />
                 {favoritesCount}
               </span>
             </div>

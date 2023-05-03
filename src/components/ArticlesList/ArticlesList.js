@@ -4,22 +4,23 @@ import nextId from "react-id-generator";
 import moment from "moment";
 import { HeartOutlined } from "@ant-design/icons";
 import { Pagination } from "antd";
-
 import { Link } from "react-router-dom";
-import apiService from "../../apiService";
+import { instance } from "../../apiService";
 
 const ArticlesList = () => {
-  const api = new apiService();
-
   const [data, setData] = useState({});
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    async function getData(offset) {
-      const data = await api.getArticles(offset);
-      setData(data);
+    async function getArticles(offset) {
+      try {
+        const res = await instance.get(`/articles?limit=5&offset=${offset}`);
+        setData(res.data);
+      } catch (error) {
+        console.error(error); // как обработать ошибку?
+      }
     }
-    getData((page - 1) * 5);
+    getArticles((page - 1) * 5);
   }, [page]);
 
   const articlePreview = (data) => {

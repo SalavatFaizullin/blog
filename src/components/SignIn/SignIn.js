@@ -2,18 +2,19 @@ import styles from "./SignIn.module.scss";
 import { useForm, Controller } from "react-hook-form";
 import { Button, Input } from "antd";
 import { Link } from "react-router-dom";
-import apiService from "../../apiService";
 import { useDispatch, useSelector } from "react-redux";
 import { authorize } from "./SignInSlice";
 import { Navigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { instance } from "../../apiService";
+import { Alert } from "antd";
 
 const SignIn = () => {
   const { user } = useSelector((state) => state.authorization);
   const dispatch = useDispatch();
 
-  const api = new apiService();
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     dispatch(authorize(JSON.parse(localStorage.getItem("user"))));
@@ -29,18 +30,31 @@ const SignIn = () => {
   });
 
   const onSubmit = (data) => {
-    const { email, password } = data;
-    async function signIn(email, password) {
-      const res = await api.signIn(email, password);
-      if (res !== undefined) {
-        localStorage.setItem("user", JSON.stringify(res));
+    async function signIn(data) {
+      try {
+        const res = await instance.post(`/users/login`, {
+          user: { ...data },
+        });
+        if (res !== undefined) {
+          localStorage.setItem("user", JSON.stringify(res.data.user));
+          Cookies.set("token", res.data.user.token, { expires: 3 });
+          dispatch(authorize(res.data.user));
+          window.location.reload();
+        }
+      } catch (err) {
+        console.error(err);
+        setError(true);
       }
-      Cookies.set("token", res.token, { expires: 3 });
-      dispatch(authorize(res));
     }
-    signIn(email, password);
+    signIn(data);
     reset();
   };
+
+  const errorAlert = error ? (
+    <div className={styles["alert-message"]}>
+      <Alert message="Email or password is incorrect" type="error" showIcon />
+    </div>
+  ) : null;
 
   return (
     <>
@@ -48,6 +62,7 @@ const SignIn = () => {
         <Navigate to="/" replace />
       ) : (
         <div className={styles.container}>
+          {errorAlert}
           <h1>Sign In</h1>
           <form onSubmit={handleSubmit(onSubmit)}>
             <label htmlFor="email">
