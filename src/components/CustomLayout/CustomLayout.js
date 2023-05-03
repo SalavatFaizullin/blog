@@ -5,19 +5,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { authorize } from "../SignIn/SignInSlice";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
+import { instance } from "../../apiService";
 
 const CustomLayout = () => {
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const res = await instance.get(`/user`);
+        dispatch(authorize(res.data.user));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getUser();
+  }, []);
+
   const { Header, Content } = Layout;
 
   const { user } = useSelector((state) => state.authorization);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(authorize(JSON.parse(localStorage.getItem("user"))));
-  }, []);
-
   const onLogout = () => {
-    localStorage.clear("user");
     Cookies.remove("token");
     dispatch(authorize(null));
     window.location.reload();

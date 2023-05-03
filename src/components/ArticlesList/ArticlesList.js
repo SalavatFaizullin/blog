@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./ArticlesList.module.scss";
 import nextId from "react-id-generator";
 import moment from "moment";
-import { HeartOutlined } from "@ant-design/icons";
+import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { Pagination } from "antd";
 import { Link } from "react-router-dom";
 import { instance } from "../../apiService";
@@ -17,7 +17,7 @@ const ArticlesList = () => {
         const res = await instance.get(`/articles?limit=5&offset=${offset}`);
         setData(res.data);
       } catch (error) {
-        console.error(error); // как обработать ошибку?
+        console.error(error);
       }
     }
     getArticles((page - 1) * 5);
@@ -32,7 +32,9 @@ const ArticlesList = () => {
       tagList,
       author,
       createdAt,
+      favorited,
     } = data;
+
     return (
       <div key={slug} className={styles.article}>
         <div className={styles.content}>
@@ -43,7 +45,14 @@ const ArticlesList = () => {
               </Link>
             </h3>
             <span>
-              <HeartOutlined className={styles.heart} />
+              {favorited ? (
+                <HeartFilled
+                  style={{ color: "red" }}
+                  className={styles.heart}
+                />
+              ) : (
+                <HeartOutlined className={styles.heart} />
+              )}
               {favoritesCount}
             </span>
           </div>
@@ -61,7 +70,14 @@ const ArticlesList = () => {
               {moment(createdAt).format("MMMM D, YYYY")}
             </div>
           </div>
-          <img className={styles.userpic} src={author.image} alt="userpic" />
+          <img
+            className={styles.userpic}
+            src={
+              author.image ||
+              `https://static.productionready.io/images/smiley-cyrus.jpg`
+            }
+            alt="userpic"
+          />
         </div>
       </div>
     );

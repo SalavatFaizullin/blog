@@ -60,6 +60,12 @@
   height: 45px;
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
+}
+
+.user {
+  display: flex;
+  margin-bottom: 10px;
 }
 
 .username {
@@ -77,4 +83,14 @@
   width: 45px;
   height: 45px;
   border-radius: 50%;
+}
+
+.edit {
+  color: #52c41a;
+  border: 1px solid #52c41a;
+  border-radius: 5px;
+
+  &:hover {
+    opacity: 60%;
+  }
 }

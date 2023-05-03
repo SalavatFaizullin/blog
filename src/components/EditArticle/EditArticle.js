@@ -1,11 +1,14 @@
-import styles from "./NewArticle.module.scss";
+import styles from "./EditArticle.module.scss";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { Button, Input, Alert } from "antd";
+import { useParams, useNavigate } from "react-router-dom";
 import { instance } from "../../apiService";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useState } from "react";
 
-const NewArticle = () => {
+const EditArticle = () => {
+  const { slug } = useParams();
+  const { article } = useSelector((state) => state.fetchingArticle);
   const navigate = useNavigate();
 
   const [error, setError] = useState(false);
@@ -14,10 +17,14 @@ const NewArticle = () => {
     register,
     formState: { errors },
     handleSubmit,
-    reset,
     control,
   } = useForm({
     mode: "onBlur",
+    defaultValues: {
+      title: article.title,
+      description: article.description,
+      body: article.body,
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -28,27 +35,24 @@ const NewArticle = () => {
 
   const onSubmit = (data) => {
     const tagList = data.tagList.map((tag) => tag.value);
-    async function createArticle() {
+    async function updateArticle() {
       try {
-        await instance.post("/articles", {
+        await instance.put(`/articles/${slug}`, {
           article: { ...data, tagList },
         });
-        navigate("/");
+        navigate(`/articles/${slug}`);
       } catch (error) {
         console.error(error);
         setError(true);
       }
     }
-    createArticle();
-    reset();
-    // const tagList = data.tagList.map((tag) => tag.value);
-    // alert(JSON.stringify({ ...data, tagList }));
+    updateArticle();
   };
 
   const errorAlert = error ? (
     <div>
       <Alert
-        message="Failed to create new article. Please, try again."
+        message="Updating failed. Please, try again."
         type="error"
         showIcon
       />
@@ -59,7 +63,7 @@ const NewArticle = () => {
     <>
       <div className={styles.container}>
         {errorAlert}
-        <h1>Create new article</h1>
+        <h1>Edit article</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <label htmlFor="title">
             Title
@@ -148,4 +152,4 @@ const NewArticle = () => {
   );
 };
 
-export default NewArticle;
+export default EditArticle;

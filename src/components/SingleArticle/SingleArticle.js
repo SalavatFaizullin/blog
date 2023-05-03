@@ -1,32 +1,34 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import moment from "moment";
-import { HeartOutlined } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
+import { HeartFilled, HeartOutlined } from "@ant-design/icons";
+import { useNavigate, useParams } from "react-router-dom";
 import nextId from "react-id-generator";
 import Markdown from "markdown-to-jsx";
 import { instance } from "../../apiService";
 import styles from "./SingleArticle.module.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { setArticle, setLikes, setIsFavorited } from "./SingleArticleSlice";
+import { Popconfirm, Button, Space } from "antd";
 
 const SingleArticle = () => {
   const { slug } = useParams();
-  const [article, setArticle] = useState({});
+  const dispatch = useDispatch();
+  const { article, likes, isFavorited } = useSelector(
+    (state) => state.fetchingArticle
+  );
+  const { user } = useSelector((state) => state.authorization);
+  const navigate = useNavigate();
 
-  const {
-    title,
-    favoritesCount,
-    tagList,
-    description,
-    body,
-    author,
-    createdAt,
-  } = article;
+  const { title, tagList, description, body, author, createdAt, favorited } =
+    article;
 
   useEffect(() => {
     async function getArticle(slug) {
       try {
         const res = await instance.get(`/articles/${slug}`);
-        setArticle(res.data.article);
-        console.log(res);
+        dispatch(setArticle(res.data.article));
+        dispatch(setLikes(res.data.article.favoritesCount));
+        // dispatch(setIsFavorited(res.data.article.favorited));
       } catch (error) {
         console.error(error);
       }
@@ -34,13 +36,34 @@ const SingleArticle = () => {
     getArticle(slug);
   }, []);
 
-  // const onLike = async (slug) => {
-  //   try {
-  //     await instance.post(`/articles/${slug}/favorite`);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const onLike = async () => {
+    try {
+      const res = await instance.post(`/articles/${slug}/favorite`);
+      dispatch(setLikes(res.data.article.favoritesCount));
+      // dispatch(setIsFavorited(res.data.article.favorited));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onUnlike = async () => {
+    try {
+      const res = await instance.delete(`/articles/${slug}/favorite`);
+      dispatch(setLikes(res.data.article.favoritesCount));
+      // dispatch(setIsFavorited(res.data.article.favorited));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onDelete = async () => {
+    try {
+      await instance.delete(`/articles/${slug}`);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -50,13 +73,19 @@ const SingleArticle = () => {
             <div className={styles.header}>
               <h3>{title}</h3>
               <span>
-                <HeartOutlined
-                  // onClick={() => {
-                  //   onLike(slug);
-                  // }}
-                  className={styles.heart}
-                />
-                {favoritesCount}
+                {favorited ? (
+                  <HeartFilled
+                    onClick={() => onLike()}
+                    style={{ color: "red" }}
+                    className={styles.heart}
+                  />
+                ) : (
+                  <HeartOutlined
+                    onClick={() => onUnlike()}
+                    className={styles.heart}
+                  />
+                )}
+                {likes}
               </span>
             </div>
             {tagList.map((tag) => (
@@ -70,13 +99,41 @@ const SingleArticle = () => {
             </p>
           </div>
           <div className={styles.info}>
-            <div>
-              <div className={styles.username}>{author.username}</div>
-              <div className={styles.date}>
-                {moment(createdAt).format("MMMM D, YYYY")}
+            <div className={styles.user}>
+              <div>
+                <div className={styles.username}>{author.username}</div>
+                <div className={styles.date}>
+                  {moment(createdAt).format("MMMM D, YYYY")}
+                </div>
               </div>
+              <img
+                className={styles.userpic}
+                src={author.image}
+                alt="userpic"
+              />
             </div>
-            <img className={styles.userpic} src={author.image} alt="userpic" />
+            {user?.username === author.username ? (
+              <div>
+                <Space>
+                  <Popconfirm
+                    title="Delete the article"
+                    description="Are you sure to delete this article?"
+                    onConfirm={() => onDelete()}
+                    okText="Yes"
+                    cancelText="No"
+                    placement={"right"}
+                  >
+                    <Button danger>DELETE</Button>
+                  </Popconfirm>
+                  <Button
+                    className={styles.edit}
+                    onClick={() => navigate(`/articles/${slug}/edit`)}
+                  >
+                    EDIT
+                  </Button>
+                </Space>
+              </div>
+            ) : null}
           </div>
         </div>
       ) : (

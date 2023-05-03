@@ -12,6 +12,10 @@ import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Profile from "./components/Profile";
 import NewArticle from "./components/NewArticle/NewArticle";
+import EditArticle from "./components/EditArticle";
+
+import RequireAuth from "./hoc/RequireAuth";
+import RequireNotAuth from "./hoc/RequireNotAuth";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,10 +23,46 @@ const router = createBrowserRouter(
       <Route index path="/" element={<ArticlesList />} />
       <Route path="articles" element={<ArticlesList />} />
       <Route path="articles/:slug" element={<SingleArticle />} />
-      <Route path="sign-in" element={<SignIn />} />
-      <Route path="sign-up" element={<SignUp />} />
-      <Route path="profile" element={<Profile />} />
-      <Route path="new-article" element={<NewArticle />} />
+      <Route
+        path="sign-in"
+        element={
+          <RequireNotAuth>
+            <SignIn />
+          </RequireNotAuth>
+        }
+      />
+      <Route
+        path="sign-up"
+        element={
+          <RequireNotAuth>
+            <SignUp />
+          </RequireNotAuth>
+        }
+      />
+      <Route
+        path="profile"
+        element={
+          <RequireAuth>
+            <Profile />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="new-article"
+        element={
+          <RequireAuth>
+            <NewArticle />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="articles/:slug/edit"
+        element={
+          <RequireAuth>
+            <EditArticle />
+          </RequireAuth>
+        }
+      />
     </Route>
   )
 );
