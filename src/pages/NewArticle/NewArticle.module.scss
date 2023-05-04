@@ -34,6 +34,46 @@
   }
 
   button {
-    width: 320px;
+    width: 300px;
+  }
+
+  .taglist {
+    div {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    input {
+      width: 300px;
+      height: 40px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      margin-right: 10px;
+      padding-left: 10px;
+      margin-bottom: 5px;
+    }
+
+    button {
+      width: 120px;
+      height: 40px;
+      background-color: white;
+      border-radius: 4px;
+      margin-right: 10px;
+      margin-bottom: 5px;
+    }
+
+    .deletebutton {
+      border: 1px solid #f5222d;
+      color: #f5222d;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .addbutton {
+      border: 1px solid #1890ff;
+      color: #1890ff;
+      align-items: center;
+      justify-content: center;
+    }
   }
 }

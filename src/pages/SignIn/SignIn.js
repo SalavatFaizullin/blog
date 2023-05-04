@@ -1,7 +1,7 @@
 import styles from "./SignIn.module.scss";
 import { useForm, Controller } from "react-hook-form";
 import { Button, Input } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { authorize } from "./SignInSlice";
 import { useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import { Alert } from "antd";
 const SignIn = () => {
   const dispatch = useDispatch();
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getUser() {
@@ -44,6 +45,7 @@ const SignIn = () => {
         if (res !== undefined) {
           Cookies.set("token", res.data.user.token, { expires: 3 });
           dispatch(authorize(res.data.user));
+          navigate("/");
         }
       } catch (err) {
         console.error(err);

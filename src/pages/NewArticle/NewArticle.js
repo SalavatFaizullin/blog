@@ -23,7 +23,7 @@ const NewArticle = () => {
   const { fields, append, remove } = useFieldArray({
     name: "tagList",
     control,
-    defaultValue: [],
+    defaultValue: [{ value: "" }],
   });
 
   const onSubmit = (data) => {
@@ -41,8 +41,6 @@ const NewArticle = () => {
     }
     createArticle();
     reset();
-    // const tagList = data.tagList.map((tag) => tag.value);
-    // alert(JSON.stringify({ ...data, tagList }));
   };
 
   const errorAlert = error ? (
@@ -119,25 +117,39 @@ const NewArticle = () => {
 
           <label htmlFor="tagList">
             Tags
-            {fields.map((tag, index) => (
-              <div key={tag.id}>
-                <input
-                  type="text"
-                  name="tagList"
-                  {...register(`tagList.${index}.value`, {
-                    required: "Shouldn't be empty",
-                  })}
-                />
-                <button type="button" onClick={() => remove(index)}>
-                  Удалить
-                </button>
-              </div>
-            ))}
-            <button type="button" onClick={() => append({ value: "" })}>
-              Добавить тег
-            </button>
+            <div className={styles.taglist}>
+              {fields.map((tag, index) => (
+                <div key={tag.id}>
+                  <input
+                    className={styles.taginput}
+                    type="text"
+                    name="tagList"
+                    placeholder="Tag"
+                    {...register(`tagList.${index}.value`, {
+                      required: "Should be filled",
+                    })}
+                  />
+                  <button
+                    className={styles.deletebutton}
+                    type="button"
+                    onClick={() => remove(index)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+              <button
+                className={styles.addbutton}
+                type="button"
+                onClick={() => append({ value: "" })}
+              >
+                Add
+              </button>
+            </div>
           </label>
-          <div className={styles.error}>{errors?.tagList?.message}</div>
+          <div className={styles.error}>
+            {errors.tagList ? errors.tagList[0].value.message : null}
+          </div>
 
           <Button className={styles.button} htmlType="submit" type="primary">
             Send

@@ -1,18 +1,18 @@
 import {
   Route,
-  // Navigate,
   createRoutesFromElements,
   createBrowserRouter,
 } from "react-router-dom";
 
 import CustomLayout from "./components/CustomLayout";
-import ArticlesList from "./components/ArticlesList/ArticlesList";
-import SingleArticle from "./components/SingleArticle";
-import SignIn from "./components/SignIn";
-import SignUp from "./components/SignUp";
-import Profile from "./components/Profile";
-import NewArticle from "./components/NewArticle/NewArticle";
-import EditArticle from "./components/EditArticle";
+
+import ArticlesList from "./pages/ArticlesList/";
+import SingleArticle from "./pages/SingleArticle";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import Profile from "./pages/Profile";
+import NewArticle from "./pages/NewArticle/";
+import EditArticle from "./pages/EditArticle";
 
 import RequireAuth from "./hoc/RequireAuth";
 import RequireNotAuth from "./hoc/RequireNotAuth";

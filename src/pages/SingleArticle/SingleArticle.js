@@ -7,8 +7,8 @@ import Markdown from "markdown-to-jsx";
 import { instance } from "../../apiService";
 import styles from "./SingleArticle.module.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setArticle, setLikes, setIsFavorited } from "./SingleArticleSlice";
-import { Popconfirm, Button, Space } from "antd";
+import { setArticle, setLikes, setFavorited } from "./SingleArticleSlice";
+import { Popconfirm, Button, Space, message } from "antd";
 
 const SingleArticle = () => {
   const { slug } = useParams();
@@ -19,16 +19,15 @@ const SingleArticle = () => {
   const { user } = useSelector((state) => state.authorization);
   const navigate = useNavigate();
 
-  const { title, tagList, description, body, author, createdAt, favorited } =
-    article;
+  const { title, tagList, description, body, author, createdAt } = article;
 
   useEffect(() => {
     async function getArticle(slug) {
       try {
         const res = await instance.get(`/articles/${slug}`);
         dispatch(setArticle(res.data.article));
-        // dispatch(setLikes(res.data.article.favoritesCount));
-        // dispatch(setIsFavorited(res.data.article.favorited));
+        dispatch(setLikes(res.data.article.favoritesCount));
+        dispatch(setFavorited(res.data.article.favorited));
       } catch (error) {
         console.error(error);
       }
@@ -36,23 +35,20 @@ const SingleArticle = () => {
     getArticle(slug);
   }, []);
 
-  const onLike = async () => {
+  const onToggleLike = async () => {
     try {
-      const res = await instance.post(`/articles/${slug}/favorite`);
-      dispatch(setLikes(res.data.article.favoritesCount));
-      // dispatch(setIsFavorited(res.data.article.favorited));
+      if (isFavorited) {
+        const res = await instance.delete(`/articles/${slug}/favorite`);
+        dispatch(setLikes(res.data.article.favoritesCount));
+        dispatch(setFavorited(false));
+      } else {
+        const res = await instance.post(`/articles/${slug}/favorite`);
+        dispatch(setLikes(res.data.article.favoritesCount));
+        dispatch(setFavorited(true));
+      }
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const onUnlike = async () => {
-    try {
-      const res = await instance.delete(`/articles/${slug}/favorite`);
-      dispatch(setLikes(res.data.article.favoritesCount));
-      // dispatch(setIsFavorited(res.data.article.favorited));
-    } catch (error) {
-      console.error(error);
+      message.error("Failed. Try again.");
     }
   };
 
@@ -73,15 +69,15 @@ const SingleArticle = () => {
             <div className={styles.header}>
               <h3>{title}</h3>
               <span>
-                {favorited ? (
+                {isFavorited ? (
                   <HeartFilled
-                    onClick={() => onLike()}
+                    onClick={() => onToggleLike()}
                     style={{ color: "red" }}
                     className={styles.heart}
                   />
                 ) : (
                   <HeartOutlined
-                    onClick={() => onUnlike()}
+                    onClick={() => onToggleLike()}
                     className={styles.heart}
                   />
                 )}

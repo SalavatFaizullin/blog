@@ -16,7 +16,7 @@ const SingleArticleSlice = createSlice({
     setLikes: (state, action) => {
       state.likes = action.payload;
     },
-    setIsFavorited: (state, action) => {
+    setFavorited: (state, action) => {
       state.isFavorited = action.payload;
     },
   },
@@ -26,4 +26,4 @@ const { actions, reducer } = SingleArticleSlice;
 
 export default reducer;
 
-export const { setArticle, setLikes, setIsFavorited } = actions;
+export const { setArticle, setLikes, setFavorited } = actions;

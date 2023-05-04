@@ -2,7 +2,7 @@ import { Outlet, Link } from "react-router-dom";
 import styles from "./CustomLayout.module.scss";
 import { Layout, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { authorize } from "../SignIn/SignInSlice";
+import { authorize } from "../../pages/SignIn/SignInSlice";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { instance } from "../../apiService";

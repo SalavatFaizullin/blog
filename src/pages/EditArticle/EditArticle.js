@@ -27,18 +27,21 @@ const EditArticle = () => {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    name: "tagList",
-    control,
-    defaultValue: [],
-  });
+  // const { fields, append, remove } = useFieldArray({
+  //   name: "tagList",
+  //   control,
+  //   defaultValue: [],
+  // });
 
   const onSubmit = (data) => {
-    const tagList = data.tagList.map((tag) => tag.value);
+    // const tagList = data.tagList.map((tag) => tag.value);
     async function updateArticle() {
       try {
         await instance.put(`/articles/${slug}`, {
-          article: { ...data, tagList },
+          article: {
+            ...data,
+            //tagList
+          },
         });
         navigate(`/articles/${slug}`);
       } catch (error) {
@@ -121,7 +124,7 @@ const EditArticle = () => {
           </label>
           <div className={styles.error}>{errors?.body?.message}</div>
 
-          <label htmlFor="tagList">
+          {/* <label htmlFor="tagList">
             Tags
             {fields.map((tag, index) => (
               <div key={tag.id}>
@@ -141,7 +144,7 @@ const EditArticle = () => {
               Добавить тег
             </button>
           </label>
-          <div className={styles.error}>{errors?.tagList?.message}</div>
+          <div className={styles.error}>{errors?.tagList?.message}</div> */}
 
           <Button className={styles.button} htmlType="submit" type="primary">
             Send
