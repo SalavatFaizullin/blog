@@ -17,6 +17,9 @@ const NewArticle = () => {
     reset,
     control,
   } = useForm({
+    defaultValues: {
+      tagList: [{ value: "" }],
+    },
     mode: "onBlur",
   });
 
@@ -123,6 +126,7 @@ const NewArticle = () => {
               {fields.map((tag, index) => (
                 <div key={tag.id}>
                   <input
+                    name="tagList"
                     type="text"
                     placeholder="Tag"
                     {...register(`tagList.${index}.value`, {
