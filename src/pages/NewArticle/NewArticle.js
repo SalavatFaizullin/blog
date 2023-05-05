@@ -23,7 +23,6 @@ const NewArticle = () => {
   const { fields, append, remove } = useFieldArray({
     name: "tagList",
     control,
-    defaultValue: [{ value: "" }],
   });
 
   const onSubmit = (data) => {
@@ -41,6 +40,7 @@ const NewArticle = () => {
     }
     createArticle();
     reset();
+    // alert(JSON.stringify(data));
   };
 
   const errorAlert = error ? (
@@ -52,6 +52,8 @@ const NewArticle = () => {
       />
     </div>
   ) : null;
+
+  // const array = [{ value: "test1" }, { value: "test2" }, { value: "test3" }];
 
   return (
     <>
@@ -121,12 +123,10 @@ const NewArticle = () => {
               {fields.map((tag, index) => (
                 <div key={tag.id}>
                   <input
-                    className={styles.taginput}
                     type="text"
-                    name="tagList"
                     placeholder="Tag"
                     {...register(`tagList.${index}.value`, {
-                      required: "Should be filled",
+                      required: true,
                     })}
                   />
                   <button
@@ -148,7 +148,7 @@ const NewArticle = () => {
             </div>
           </label>
           <div className={styles.error}>
-            {errors.tagList ? errors.tagList[0].value.message : null}
+            {errors.tagList ? "Can't be empty. Fill out or delete." : null}
           </div>
 
           <Button className={styles.button} htmlType="submit" type="primary">

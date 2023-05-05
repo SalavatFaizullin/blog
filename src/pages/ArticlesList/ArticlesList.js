@@ -6,10 +6,13 @@ import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { Pagination, message } from "antd";
 import { Link } from "react-router-dom";
 import { instance } from "../../apiService";
+import Cookies from "js-cookie";
 
 const ArticlesList = () => {
   const [data, setData] = useState({});
   const [page, setPage] = useState(1);
+
+  const token = Cookies.get("token");
 
   useEffect(() => {
     async function getArticles(offset) {
@@ -73,17 +76,23 @@ const ArticlesList = () => {
               </Link>
             </h3>
             <span>
-              {favorited ? (
-                <HeartFilled
-                  onClick={() => onToggleLike(slug)}
-                  style={{ color: "red" }}
-                  className={styles.heart}
-                />
+              {token ? (
+                <>
+                  {favorited ? (
+                    <HeartFilled
+                      onClick={() => onToggleLike()}
+                      style={{ color: "red" }}
+                      className={styles.heart}
+                    />
+                  ) : (
+                    <HeartOutlined
+                      onClick={() => onToggleLike()}
+                      className={styles.heart}
+                    />
+                  )}
+                </>
               ) : (
-                <HeartOutlined
-                  onClick={() => onToggleLike(slug)}
-                  className={styles.heart}
-                />
+                <HeartOutlined className={styles.heart} />
               )}
               {favoritesCount}
             </span>

@@ -30,6 +30,9 @@ const SingleArticle = () => {
         dispatch(setFavorited(res.data.article.favorited));
       } catch (error) {
         console.error(error);
+        message.error(
+          "Failed to load article. Please, check your connection and try again."
+        );
       }
     }
     getArticle(slug);
@@ -58,6 +61,7 @@ const SingleArticle = () => {
       navigate("/");
     } catch (error) {
       console.error(error);
+      message.error("Failed to delete. Try again.");
     }
   };
 
@@ -69,17 +73,23 @@ const SingleArticle = () => {
             <div className={styles.header}>
               <h3>{title}</h3>
               <span>
-                {isFavorited ? (
-                  <HeartFilled
-                    onClick={() => onToggleLike()}
-                    style={{ color: "red" }}
-                    className={styles.heart}
-                  />
+                {user ? (
+                  <>
+                    {isFavorited ? (
+                      <HeartFilled
+                        onClick={() => onToggleLike()}
+                        style={{ color: "red" }}
+                        className={styles.heart}
+                      />
+                    ) : (
+                      <HeartOutlined
+                        onClick={() => onToggleLike()}
+                        className={styles.heart}
+                      />
+                    )}
+                  </>
                 ) : (
-                  <HeartOutlined
-                    onClick={() => onToggleLike()}
-                    className={styles.heart}
-                  />
+                  <HeartOutlined className={styles.heart} />
                 )}
                 {likes}
               </span>

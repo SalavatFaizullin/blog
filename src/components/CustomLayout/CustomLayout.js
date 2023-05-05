@@ -28,6 +28,7 @@ const CustomLayout = () => {
   const onLogout = () => {
     Cookies.remove("token");
     dispatch(authorize(null));
+    window.location.reload();
   };
 
   return (

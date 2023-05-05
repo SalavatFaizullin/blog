@@ -40,7 +40,7 @@ const SignUp = () => {
   const errorAlert = error ? (
     <div>
       <Alert
-        message="Registration failed. Please, try again."
+        message="Registration failed - email or username already exists. Please, try again."
         type="error"
         showIcon
       />

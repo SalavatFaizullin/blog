@@ -11,9 +11,4 @@ const instance = axios.create({
   },
 });
 
-instance.interceptors.request.use((config) => {
-  config.headers.Authorization = `Token ${token}`;
-  return config;
-});
-
 export { instance };
