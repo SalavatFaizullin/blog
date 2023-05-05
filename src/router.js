@@ -59,7 +59,7 @@ const router = createBrowserRouter(
         path="articles/:slug/edit"
         element={
           <RequireAuth>
-            <EditArticle />
+            <NewArticle />
           </RequireAuth>
         }
       />
