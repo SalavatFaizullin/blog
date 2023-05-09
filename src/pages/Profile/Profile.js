@@ -1,4 +1,4 @@
-/* eslint-disable jsx-props-no-spreading */
+/* eslint-disable */
 import { useForm, Controller } from 'react-hook-form'
 import { Button, Input, Alert } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
