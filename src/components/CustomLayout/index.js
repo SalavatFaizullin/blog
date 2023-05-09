@@ -1,3 +1,3 @@
-import CustomLayout from "./CustomLayout";
+import CustomLayout from './CustomLayout'
 
-export default CustomLayout;
+export default CustomLayout

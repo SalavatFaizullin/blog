@@ -1,60 +1,55 @@
-import { Outlet, Link } from "react-router-dom";
-import styles from "./CustomLayout.module.scss";
-import { Layout, Button } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { authorize } from "../../pages/SignIn/SignInSlice";
-import { useEffect } from "react";
-import Cookies from "js-cookie";
-import { instance } from "../../apiService";
+import { Outlet, Link } from 'react-router-dom'
+import { Layout, Button } from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import Cookies from 'js-cookie'
 
-const CustomLayout = () => {
+import { authorize } from '../../pages/SignIn/SignInSlice'
+import instance from '../../apiService'
+
+import styles from './CustomLayout.module.scss'
+
+function CustomLayout() {
+  const { user } = useSelector((state) => state.authorization)
+  const dispatch = useDispatch()
+
   useEffect(() => {
     const getUser = async () => {
-      try {
-        const res = await instance.get(`/user`);
-        dispatch(authorize(res.data.user));
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getUser();
-  }, []);
+      const res = await instance.get('/user')
+      dispatch(authorize(res.data.user))
+    }
+    getUser()
+  }, [])
 
-  const { Header, Content } = Layout;
-
-  const { user } = useSelector((state) => state.authorization);
-  const dispatch = useDispatch();
+  const { Header, Content } = Layout
 
   const onLogout = () => {
-    Cookies.remove("token");
-    dispatch(authorize(null));
-    window.location.reload();
-  };
+    Cookies.remove('token')
+    dispatch(authorize(null))
+    window.location.reload()
+  }
 
   return (
     <Layout>
       <Header className={styles.header}>
-        <Link to="/">Realworld Blog</Link>
+        <Link to='/'>Realworld Blog</Link>
         {user ? (
           <>
             <div className={styles.info}>
               <div>
-                <Link className={styles.create} to="/new-article">
+                <Link className={styles.create} to='/new-article'>
                   Create article
                 </Link>
               </div>
               <div>
-                <Link to="/profile">
+                <Link to='/profile'>
                   <div className={styles.username}>{user.username}</div>
                 </Link>
               </div>
               <img
                 className={styles.userpic}
-                src={
-                  user.image ||
-                  "https://static.productionready.io/images/smiley-cyrus.jpg"
-                }
-                alt="userpic"
+                src={user.image || 'https://static.productionready.io/images/smiley-cyrus.jpg'}
+                alt='userpic'
               />
             </div>
             <div>
@@ -65,10 +60,10 @@ const CustomLayout = () => {
           </>
         ) : (
           <div>
-            <Link className={styles.login} to="sign-in">
+            <Link className={styles.login} to='sign-in'>
               Sign In
             </Link>
-            <Link className={styles.register} to="sign-up">
+            <Link className={styles.register} to='sign-up'>
               Sign Up
             </Link>
           </div>
@@ -78,7 +73,7 @@ const CustomLayout = () => {
         <Outlet />
       </Content>
     </Layout>
-  );
-};
+  )
+}
 
-export default CustomLayout;
+export default CustomLayout

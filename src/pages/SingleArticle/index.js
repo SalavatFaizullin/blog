@@ -1,3 +1,3 @@
-import SingleArticle from "./SingleArticle";
+import SingleArticle from './SingleArticle'
 
-export default SingleArticle;
+export default SingleArticle

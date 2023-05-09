@@ -2,20 +2,17 @@ import {
   Route,
   createRoutesFromElements,
   createBrowserRouter,
-} from "react-router-dom";
+} from 'react-router-dom'
 
-import CustomLayout from "./components/CustomLayout";
-
-import ArticlesList from "./pages/ArticlesList/";
-import SingleArticle from "./pages/SingleArticle";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import Profile from "./pages/Profile";
-import NewArticle from "./pages/NewArticle/";
-import EditArticle from "./pages/EditArticle";
-
-import RequireAuth from "./hoc/RequireAuth";
-import RequireNotAuth from "./hoc/RequireNotAuth";
+import CustomLayout from './components/CustomLayout'
+import ArticlesList from './pages/ArticlesList'
+import SingleArticle from './pages/SingleArticle'
+import SignIn from './pages/SignIn'
+import SignUp from './pages/SignUp'
+import Profile from './pages/Profile'
+import NewArticle from './pages/NewArticle'
+import RequireAuth from './hoc/RequireAuth'
+import RequireNotAuth from './hoc/RequireNotAuth'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,6 +62,6 @@ const router = createBrowserRouter(
       />
     </Route>
   )
-);
+)
 
-export default router;
+export default router
