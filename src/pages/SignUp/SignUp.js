@@ -53,7 +53,6 @@ function SignUp() {
       {errorAlert}
       <h1>Create new account</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        (// eslint-disable-next-line jsx-a11y/label-has-associated-control)
         <label htmlFor='username'>Username</label>
         <Controller
           name='username'

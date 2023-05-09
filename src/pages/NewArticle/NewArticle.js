@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useForm, Controller, useFieldArray } from 'react-hook-form'
 import { Button, Input, Alert } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -20,11 +21,11 @@ function NewArticle() {
   const article = slug
     ? data
     : {
-      title: '',
-      description: '',
-      body: '',
-      tagList: [''],
-    }
+        title: '',
+        description: '',
+        body: '',
+        tagList: [''],
+      }
 
   const header = slug ? 'Edit article' : 'Create new article'
 
@@ -81,76 +82,72 @@ function NewArticle() {
       {errorAlert}
       <h1>{header}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor='title'>
-          Title
-          <Controller
-            defaultValue={article.title}
-            name='title'
-            control={control}
-            rules={{
-              required: 'Title is required',
-            }}
-            render={({ field }) => <Input {...field} placeholder='Title' status={errors.title ? 'error' : null} />}
-          />
-        </label>
+        <label htmlFor='title'>Title</label>
+        <Controller
+          defaultValue={article.title}
+          name='title'
+          control={control}
+          rules={{
+            required: 'Title is required',
+          }}
+          render={({ field }) => <Input {...field} placeholder='Title' status={errors.title ? 'error' : null} />}
+        />
+
         <div className={styles.error}>{errors?.title?.message}</div>
 
-        <label htmlFor='description'>
-          Short description
-          <Controller
-            name='description'
-            control={control}
-            rules={{
-              required: 'Description is required',
-            }}
-            render={({ field }) => (
-              <Input {...field} placeholder='Short description' status={errors.description ? 'error' : null} />
-            )}
-          />
-        </label>
+        <label htmlFor='description'>Short description</label>
+        <Controller
+          name='description'
+          control={control}
+          rules={{
+            required: 'Description is required',
+          }}
+          render={({ field }) => (
+            <Input {...field} placeholder='Short description' status={errors.description ? 'error' : null} />
+          )}
+        />
+
         <div className={styles.error}>{errors?.description?.message}</div>
 
-        <label htmlFor='body'>
-          Text
-          <Controller
-            name='body'
-            control={control}
-            rules={{ required: 'Text is required' }}
-            render={({ field }) => (
-              <Input.TextArea
-                className={styles.textarea}
-                {...field}
-                placeholder='Text'
-                status={errors.body ? 'error' : null}
-              />
-            )}
-          />
-        </label>
+        <label htmlFor='body'>Text</label>
+        <Controller
+          name='body'
+          control={control}
+          rules={{ required: 'Text is required' }}
+          render={({ field }) => (
+            <Input.TextArea
+              className={styles.textarea}
+              {...field}
+              placeholder='Text'
+              status={errors.body ? 'error' : null}
+            />
+          )}
+        />
+
         <div className={styles.error}>{errors?.body?.message}</div>
 
-        <label htmlFor='tagList'>
-          Tags
-          <div className={styles.taglist}>
-            {fields.map((tag, index) => (
-              <div key={tag.id}>
-                <input
-                  name='tagList'
-                  type='text'
-                  placeholder='Tag'
-                  {...register(`tagList.${index}.tag`, {
-                    required: true,
-                  })}
-                />
-                <button className={styles.deletebutton} type='button' onClick={() => remove(index)}>
-                  Delete
-                </button>
-              </div>
-            ))}
-            <button className={styles.addbutton} type='button' onClick={() => append({ tag: '' })}>
-              Add
-            </button>
-          </div>
-        </label>
+        <label htmlFor='tagList'>Tags</label>
+        <div className={styles.taglist}>
+          {fields.map((tag, index) => (
+            <div key={tag.id}>
+              <input
+                name='tagList'
+                type='text'
+                placeholder='Tag'
+                {...register(`tagList.${index}.tag`, {
+                  required: true,
+                })}
+              />
+              <button className={styles.deletebutton} type='button' onClick={() => remove(index)}>
+                Delete
+              </button>
+            </div>
+          ))}
+          <button className={styles.addbutton} type='button' onClick={() => append({ tag: '' })}>
+            Add
+          </button>
+        </div>
+
         <div className={styles.error}>
           {errors.tagList ? 'Tag is required. Put some value or delete this field.' : null}
         </div>
