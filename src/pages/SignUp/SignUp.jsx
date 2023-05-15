@@ -1,15 +1,12 @@
-/* eslint-disable */
 import { useForm, Controller } from 'react-hook-form'
-import { Button, Input, Alert } from 'antd'
+import { Button, Input, message } from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 
-import instance from '../../apiService'
+import { createUser } from '../../api'
 
 import styles from './SignUp.module.scss'
 
 function SignUp() {
-  const [error, setError] = useState(false)
   const navigate = useNavigate()
 
   const {
@@ -24,35 +21,25 @@ function SignUp() {
   })
 
   const onSubmit = (data) => {
-    async function signUp(d) {
+    async function signUp(arg) {
       try {
-        await instance.post('/users', {
-          user: { ...d },
+        await createUser({
+          user: { ...arg },
         })
         navigate('/sign-in')
-      } catch {
-        setError(true)
+      } catch (e) {
+        message.error(`Username or email already exists. ${e.message}`)
       }
     }
     signUp(data)
     reset()
   }
 
-  const errorAlert = error ? (
-    <div>
-      <Alert
-        message='Registration failed - email or username already exists. Please, try again.'
-        type='error'
-        showIcon
-      />
-    </div>
-  ) : null
-
   return (
     <div className={styles.container}>
-      {errorAlert}
       <h1>Create new account</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='username'>Username</label>
         <Controller
           name='username'
@@ -83,6 +70,7 @@ function SignUp() {
           )}
         />
         <div className={styles.error}>{errors?.username?.message}</div>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='email'>Email address</label>
         <Controller
           name='email'
@@ -106,6 +94,7 @@ function SignUp() {
           )}
         />
         <div className={styles.error}>{errors?.email?.message}</div>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='password'>Password</label>
         <Controller
           name='password'
@@ -132,6 +121,7 @@ function SignUp() {
           )}
         />
         <div className={styles.error}>{errors?.password?.message}</div>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='confirm-password'>Repeat password</label>
         <Controller
           name='confirmPassword'
@@ -151,6 +141,7 @@ function SignUp() {
           )}
         />
         <div className={styles.error}>{errors?.confirmPassword?.message}</div>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='checkbox' />
         <input
           id='checkbox'
@@ -168,7 +159,10 @@ function SignUp() {
         </Button>
       </form>
       <span className={styles.link}>
-        Already have an account?<Link to='/sign-in'> Sign In.</Link>
+        Already have an account?&nbsp;
+        <Link area-label='Sign In' to='/sign-in'>
+          Sign In.
+        </Link>
       </span>
     </div>
   )

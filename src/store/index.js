@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 
-import authorization from '../pages/SignIn/SignInSlice'
-import fetchingArticle from '../pages/SingleArticle/SingleArticleSlice'
+import authorization from './SignInSlice'
+import fetchingArticle from './SingleArticleSlice'
 
 const store = configureStore({
   reducer: { authorization, fetchingArticle },

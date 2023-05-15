@@ -1,26 +1,22 @@
-/* eslint-disable */
 import { useForm, Controller } from 'react-hook-form'
-import { Button, Input, Alert } from 'antd'
+import { Button, Input, message } from 'antd'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Cookies from 'js-cookie'
 
-import instance from '../../apiService'
+import { login, requestUser } from '../../api'
+import { authorize } from '../../store/SignInSlice'
 
-import { authorize } from './SignInSlice'
 import styles from './SignIn.module.scss'
 
 function SignIn() {
   const dispatch = useDispatch()
-  const [error, setError] = useState(false)
 
   useEffect(() => {
     async function getUser() {
-      const res = await instance.get('/user')
-      if (res.ok) {
-        dispatch(authorize(res.data.user))
-      }
+      const res = await requestUser('/user')
+      dispatch(authorize(res))
     }
     getUser()
   }, [])
@@ -34,34 +30,28 @@ function SignIn() {
   })
 
   const onSubmit = (data) => {
-    async function signIn(d) {
+    async function signIn(arg) {
       try {
-        const res = await instance.post('/users/login', {
-          user: { ...d },
+        const res = await login({
+          user: { ...arg },
         })
         if (res !== undefined) {
-          Cookies.set('token', res.data.user.token, { expires: 3 })
-          dispatch(authorize(res.data.user))
+          Cookies.set('token', res.token, { expires: 3 })
+          dispatch(authorize(res))
           window.location.reload()
         }
-      } catch {
-        setError(true)
+      } catch (e) {
+        message.error(`Failed. Wrong email or password. ${e.message}`)
       }
     }
     signIn(data)
   }
 
-  const errorAlert = error ? (
-    <div>
-      <Alert message='Email or password is incorrect' type='error' showIcon />
-    </div>
-  ) : null
-
   return (
     <div className={styles.container}>
-      {errorAlert}
       <h1>Sign In</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='email'>Email address</label>
         <Controller
           name='email'
@@ -86,7 +76,7 @@ function SignIn() {
         />
 
         <div className={styles.error}>{errors?.email?.message}</div>
-
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='password'>Password</label>
         <Controller
           name='password'
@@ -119,7 +109,10 @@ function SignIn() {
         </Button>
       </form>
       <span className={styles.link}>
-        Don&apos;t have an account?<Link to='/sign-up'> Sign Up.</Link>
+        Don&apos;t have an account?&nbsp;
+        <Link area-label='Sign Up' to='/sign-up'>
+          Sign Up.
+        </Link>
       </span>
     </div>
   )

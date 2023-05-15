@@ -7,10 +7,10 @@ import Markdown from 'markdown-to-jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { Popconfirm, Button, Space, message } from 'antd'
 
-import instance from '../../apiService'
+import { setArticle, setLikes, setFavorited } from '../../store/SingleArticleSlice'
+import { requestArticle, like, unLike, deleteArticle } from '../../api'
 
 import styles from './SingleArticle.module.scss'
-import { setArticle, setLikes, setFavorited } from './SingleArticleSlice'
 
 function SingleArticle() {
   const { slug } = useParams()
@@ -22,14 +22,14 @@ function SingleArticle() {
   const { title, tagList, description, body, author, createdAt } = article
 
   useEffect(() => {
-    async function getArticle(s) {
+    async function getArticle(arg) {
       try {
-        const res = await instance.get(`/articles/${s}`)
-        dispatch(setArticle(res.data.article))
-        dispatch(setLikes(res.data.article.favoritesCount))
-        dispatch(setFavorited(res.data.article.favorited))
-      } catch (error) {
-        message.error('Failed to load article. Please, check your connection and try again.')
+        const res = await requestArticle(arg)
+        dispatch(setArticle(res))
+        dispatch(setLikes(res.favoritesCount))
+        dispatch(setFavorited(res.favorited))
+      } catch (e) {
+        message.error(`Failed to get article. ${e.message}`)
       }
     }
     getArticle(slug)
@@ -38,25 +38,25 @@ function SingleArticle() {
   const onToggleLike = async () => {
     try {
       if (isFavorited) {
-        const res = await instance.delete(`/articles/${slug}/favorite`)
-        dispatch(setLikes(res.data.article.favoritesCount))
+        const res = await unLike(slug)
+        dispatch(setLikes(res.favoritesCount))
         dispatch(setFavorited(false))
       } else {
-        const res = await instance.post(`/articles/${slug}/favorite`)
-        dispatch(setLikes(res.data.article.favoritesCount))
+        const res = await like(slug)
+        dispatch(setLikes(res.favoritesCount))
         dispatch(setFavorited(true))
       }
-    } catch (error) {
-      message.error('Failed. Try again.')
+    } catch (e) {
+      message.error(`Failed to like/unlike. ${e.message}`)
     }
   }
 
   const onDelete = async () => {
     try {
-      await instance.delete(`/articles/${slug}`)
+      await deleteArticle(slug)
       navigate('/')
-    } catch (error) {
-      message.error('Failed to delete. Try again.')
+    } catch (e) {
+      message.error(`Failed to delete. ${e.message}`)
     }
   }
 
@@ -111,9 +111,11 @@ function SingleArticle() {
                     cancelText='No'
                     placement='right'
                   >
-                    <Button danger>DELETE</Button>
+                    <Button htmlType='button' danger>
+                      DELETE
+                    </Button>
                   </Popconfirm>
-                  <Button className={styles.edit} onClick={() => navigate(`/articles/${slug}/edit`)}>
+                  <Button htmlType='button' className={styles.edit} onClick={() => navigate(`/articles/${slug}/edit`)}>
                     EDIT
                   </Button>
                 </Space>

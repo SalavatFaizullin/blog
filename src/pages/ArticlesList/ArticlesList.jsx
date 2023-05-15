@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { useEffect, useState } from 'react'
 import nextId from 'react-id-generator'
 import moment from 'moment'
@@ -7,7 +6,7 @@ import { Pagination, message } from 'antd'
 import { Link } from 'react-router-dom'
 import Cookies from 'js-cookie'
 
-import instance from '../../apiService'
+import { requestArticleList, like, unLike } from '../../api'
 
 import styles from './ArticlesList.module.scss'
 
@@ -20,10 +19,10 @@ function ArticlesList() {
   useEffect(() => {
     async function getArticles(offset) {
       try {
-        const res = await instance.get(`/articles?limit=5&offset=${offset}`)
-        setData(res.data)
-      } catch {
-        message.error('Failed to load articles. Please, check your connection and try again.')
+        const res = await requestArticleList(offset)
+        setData(res)
+      } catch (e) {
+        message.error(`Failed to load article list. ${e.message}`)
       }
     }
     getArticles((page - 1) * 5)
@@ -34,7 +33,7 @@ function ArticlesList() {
 
     const onToggleLike = async () => {
       try {
-        const response = await instance[favorited ? 'delete' : 'post'](`/articles/${slug}/favorite`)
+        const res = await (favorited ? unLike(slug) : like(slug))
         setData((prevData) => ({
           ...prevData,
           articles: prevData.articles.map((article) => {
@@ -42,14 +41,14 @@ function ArticlesList() {
               return {
                 ...article,
                 favorited: !favorited,
-                favoritesCount: response.data.article.favoritesCount,
+                favoritesCount: res.favoritesCount,
               }
             }
             return article
           }),
         }))
-      } catch {
-        message.error('Failed. Try again.')
+      } catch (e) {
+        message.error(`Failed to like/unlike. ${e.message}`)
       }
     }
 
@@ -58,7 +57,7 @@ function ArticlesList() {
         <div className={styles.content}>
           <div className={styles.header}>
             <h3>
-              <Link key={slug} to={`/articles/${slug}`}>
+              <Link area-label={title} key={slug} to={`/articles/${slug}`}>
                 {title}
               </Link>
             </h3>
@@ -104,6 +103,7 @@ function ArticlesList() {
   }
 
   return (
+    // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
       {data.articles ? (
         <>

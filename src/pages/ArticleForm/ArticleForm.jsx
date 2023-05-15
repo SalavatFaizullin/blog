@@ -1,31 +1,20 @@
-/* eslint-disable */
 import { useForm, Controller, useFieldArray } from 'react-hook-form'
-import { Button, Input, Alert } from 'antd'
+import { Button, Input, message } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import instance from '../../apiService'
+import { createArticle, updateArticle } from '../../api'
 
-import styles from './NewArticle.module.scss'
+import styles from './ArticleForm.module.scss'
 
-function NewArticle() {
+function ArticleForm() {
   const navigate = useNavigate()
 
   const { slug } = useParams()
 
-  const [error, setError] = useState(false)
-
   const data = useSelector((state) => state.fetchingArticle.article)
 
-  const article = slug
-    ? data
-    : {
-        title: '',
-        description: '',
-        body: '',
-        tagList: [''],
-      }
+  const article = slug ? data : { title: '', description: '', body: '', tagList: [''] }
 
   const header = slug ? 'Edit article' : 'Create new article'
 
@@ -49,39 +38,33 @@ function NewArticle() {
     control,
   })
 
-  const onSubmit = (arg) => {
-    const tagList = arg.tagList.map((item) => item.tag)
-    async function createArticle() {
+  const onSubmit = (articleData) => {
+    const tagList = articleData.tagList.map((item) => item.tag)
+    async function newArticle() {
       try {
         if (slug) {
-          await instance.put(`/articles/${slug}`, {
-            article: { ...arg, tagList },
+          await updateArticle(slug, {
+            article: { ...articleData, tagList },
           })
           navigate(`/articles/${slug}`)
         } else {
-          await instance.post('/articles', {
-            article: { ...arg, tagList },
+          await createArticle({
+            article: { ...articleData, tagList },
           })
           navigate('/')
         }
-      } catch {
-        setError(true)
+      } catch (e) {
+        message.error(`Failed to create or update an article. ${e.message}`)
       }
     }
-    createArticle()
+    newArticle()
   }
-
-  const errorAlert = error ? (
-    <div>
-      <Alert message='Failed to create new article. Please, try again.' type='error' showIcon />
-    </div>
-  ) : null
 
   return (
     <div className={styles.container}>
-      {errorAlert}
       <h1>{header}</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='title'>Title</label>
         <Controller
           defaultValue={article.title}
@@ -94,7 +77,7 @@ function NewArticle() {
         />
 
         <div className={styles.error}>{errors?.title?.message}</div>
-
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='description'>Short description</label>
         <Controller
           name='description'
@@ -108,7 +91,7 @@ function NewArticle() {
         />
 
         <div className={styles.error}>{errors?.description?.message}</div>
-
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='body'>Text</label>
         <Controller
           name='body'
@@ -125,7 +108,7 @@ function NewArticle() {
         />
 
         <div className={styles.error}>{errors?.body?.message}</div>
-
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='tagList'>Tags</label>
         <div className={styles.taglist}>
           {fields.map((tag, index) => (
@@ -138,12 +121,12 @@ function NewArticle() {
                   required: true,
                 })}
               />
-              <button className={styles.deletebutton} type='button' onClick={() => remove(index)}>
+              <button type='button' className={styles.deletebutton} onClick={() => remove(index)}>
                 Delete
               </button>
             </div>
           ))}
-          <button className={styles.addbutton} type='button' onClick={() => append({ tag: '' })}>
+          <button type='button' className={styles.addbutton} onClick={() => append({ tag: '' })}>
             Add
           </button>
         </div>
@@ -160,4 +143,4 @@ function NewArticle() {
   )
 }
 
-export default NewArticle
+export default ArticleForm

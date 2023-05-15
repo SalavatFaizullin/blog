@@ -4,19 +4,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import Cookies from 'js-cookie'
 
-import { authorize } from '../../pages/SignIn/SignInSlice'
-import instance from '../../apiService'
+import { authorize } from '../../store/SignInSlice'
+import { requestUser } from '../../api'
 
-import styles from './CustomLayout.module.scss'
+import styles from './BlogLayout.module.scss'
 
-function CustomLayout() {
+function BlogLayout() {
   const { user } = useSelector((state) => state.authorization)
   const dispatch = useDispatch()
 
   useEffect(() => {
     const getUser = async () => {
-      const res = await instance.get('/user')
-      dispatch(authorize(res.data.user))
+      const res = await requestUser()
+      dispatch(authorize(res))
     }
     getUser()
   }, [])
@@ -32,17 +32,19 @@ function CustomLayout() {
   return (
     <Layout>
       <Header className={styles.header}>
-        <Link to='/'>Realworld Blog</Link>
+        <Link area-label='Home' to='/'>
+          Realworld Blog
+        </Link>
         {user ? (
           <>
             <div className={styles.info}>
               <div>
-                <Link className={styles.create} to='/new-article'>
+                <Link area-label='Create article' className={styles.create} to='/new-article'>
                   Create article
                 </Link>
               </div>
               <div>
-                <Link to='/profile'>
+                <Link area-label='Profile' to='/profile'>
                   <div className={styles.username}>{user.username}</div>
                 </Link>
               </div>
@@ -53,17 +55,17 @@ function CustomLayout() {
               />
             </div>
             <div>
-              <Button className={styles.logout} onClick={onLogout}>
+              <Button htmlType='buttton' className={styles.logout} onClick={onLogout}>
                 Log Out
               </Button>
             </div>
           </>
         ) : (
           <div>
-            <Link className={styles.login} to='sign-in'>
+            <Link area-label='Sign In' className={styles.login} to='sign-in'>
               Sign In
             </Link>
-            <Link className={styles.register} to='sign-up'>
+            <Link area-label='Sign Up' className={styles.register} to='sign-up'>
               Sign Up
             </Link>
           </div>
@@ -76,4 +78,4 @@ function CustomLayout() {
   )
 }
 
-export default CustomLayout
+export default BlogLayout

@@ -1,20 +1,15 @@
-/* eslint-disable */
 import { useForm, Controller } from 'react-hook-form'
-import { Button, Input, Alert } from 'antd'
+import { Button, Input, message } from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
-import { useState } from 'react'
 
-import { authorize } from '../SignIn/SignInSlice'
-import instance from '../../apiService'
+import { authorize } from '../../store/SignInSlice'
+import { updateUser } from '../../api'
 
 import styles from './Profile.module.scss'
 
 function Profile() {
   const { user } = useSelector((state) => state.authorization)
   const dispatch = useDispatch()
-
-  const [error, setError] = useState(false)
-  const [success, setSuccess] = useState(false)
 
   const {
     formState: { errors },
@@ -31,43 +26,30 @@ function Profile() {
   })
 
   const onSubmit = (data) => {
-    async function updateUser(arg) {
+    async function updateProfile(arg) {
       try {
-        const res = await instance.put('/user', {
+        const res = await updateUser({
           user: { ...arg },
         })
-        dispatch(authorize(res.data.user))
-        setSuccess(true)
-      } catch {
-        setError(true)
+        dispatch(authorize(res))
+        message.success('User updated')
+      } catch (e) {
+        message.error(`Failed to update user. ${e.message}`)
       }
     }
-    updateUser(data)
+    updateProfile(data)
     reset()
   }
 
-  const errorAlert = error ? (
-    <div>
-      <Alert message='Email or password is incorrect' type='error' showIcon />
-    </div>
-  ) : null
-
-  const successAlert = success ? (
-    <div className={styles['alert-message']}>
-      <Alert message='Profile updated' type='success' showIcon />
-    </div>
-  ) : null
-
   return (
     <div className={styles.container}>
-      {errorAlert}
-      {successAlert}
       <h1>Edit Profile</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='username'>
           Username
           <Controller
-            name='username'
+            htmlFor='username'
             control={control}
             rules={{
               required: 'Please input username',
@@ -86,6 +68,7 @@ function Profile() {
             }}
             render={({ field }) => (
               <Input
+                htmlName='username'
                 autoComplete='username'
                 className={styles.input}
                 {...field}
@@ -95,11 +78,10 @@ function Profile() {
           />
         </label>
         <div className={styles.error}>{errors?.username?.message}</div>
-
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='email'>
           Email address
           <Controller
-            name='email'
             control={control}
             rules={{
               required: 'Please input email',
@@ -110,6 +92,7 @@ function Profile() {
             }}
             render={({ field }) => (
               <Input
+                htmlName='email'
                 autoComplete='email'
                 className={styles.input}
                 {...field}
@@ -120,7 +103,7 @@ function Profile() {
           />
         </label>
         <div className={styles.error}>{errors?.email?.message}</div>
-
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='password'>
           Password
           <Controller
@@ -148,7 +131,7 @@ function Profile() {
           />
         </label>
         <div className={styles.error}>{errors?.password?.message}</div>
-
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor='image'>
           Avatar
           <Controller
@@ -156,7 +139,7 @@ function Profile() {
             control={control}
             rules={{
               pattern: {
-                value: /^(https?:\/\/)?[\w\-]+(\.[\w\-]+)+[\w\-\.,@?^=%&:/~\+#]*\.(jpg|jpeg|png|gif|bmp|svg|webp)$/,
+                value: /^(https?:\/\/)?[\w\-]+(\.[\w\-]+)+[\w\-\.,@?^=%&:/~\+#]*\.(jpg|jpeg|png|gif|bmp|svg|webp)$/, // eslint-disable-line no-useless-escape
                 message: 'Invalid URL',
               },
             }}
@@ -166,7 +149,6 @@ function Profile() {
           />
         </label>
         <div className={styles.error}> {errors?.image?.message} </div>
-
         <Button className={styles.button} htmlType='submit' type='primary'>
           Save
         </Button>
